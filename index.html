@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zxx">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<title>Image Click Zoom</title>
+
+
+		<style>
+			body {
+			  background: #d5d5b1;
+			}
+
+			.image_content__main {
+			  width: 90%;
+			  max-width: 600px;
+			  background: #dfdfdf;
+			  border-radius: 5px;
+			  overflow: hidden;
+			  margin: 50px auto;
+			  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+			}
+			.image_content__main img {
+			  display: block;
+			  width: 100%;
+			  position: relative;
+			}
+			.image_content__main:hover {
+			  cursor: zoom-in;
+			}
+		</style>			 	
+
+	</head> 
+
+	<body>
+
+
+
+		<div class="image_content__main">
+		  	<img src="apro132-1.jpg" class="img_cover" title="click me">		  	
+		</div> 
+		
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+		<script>
+			$(document).ready(function() {
+
+			  	var $main = $('.image_content__main'),
+
+			    $mainImg = $main.find('.img_cover'),
+
+			    $bool = false,
+
+			    $win = $(window),
+			    $widthImg = $mainImg.width(),
+			    $heightImg = $mainImg.height(),
+			    positionFunc = function(e) {
+			      return x = e.pageX - $main.offset().left, y = e.pageY - $main.offset().top;
+			    },
+			    zoomIn = function(e) {
+			      positionFunc(e);
+			      $mainImg.animate({
+			        left: -x,
+			        top: -y,
+			        width: $widthImg * 2.01,
+			        height: $heightImg * 2.01
+			      }, 200, function() {
+			        $main.bind('mousemove', function(e) {
+			          positionFunc(e);
+			          $mainImg.css({
+			            left: -x,
+			            top: -y
+			          });
+			        });
+			      }).css({
+			        	cursor: 'zoom-out',
+			      });
+			      $bool = true;
+			    },
+			    zoomOut = function() {
+			      	$mainImg.animate({
+			        	left: 0,
+			        	top: 0,
+			        	width: $widthImg,
+			        	height: $heightImg
+			      	}, 100).css({
+			        	cursor: ''
+			      	});
+			      	$main.unbind('mousemove');
+			      	$bool = false;
+			    }
+
+				$main.bind('mousedown', function(e) {
+				   	if ($bool !== true) {
+				      	zoomIn(e);
+				      	$main.css({
+			        		height: $heightImg
+				      	});
+				    } else {
+				      	zoomOut();
+
+				      	$main.css({
+				        	height: $(this).height()
+				      	});
+				    }
+				}).bind('mouseout', function() {
+				   	zoomOut();
+			  	});
+
+			  	$win.scroll(function() {
+			    	if ($bool) {
+			      	zoomOut();
+			    	}
+			  	});
+			});
+		</script>
+		 	 
+	</body><!-- /body -->
+</html><!-- /html -->
